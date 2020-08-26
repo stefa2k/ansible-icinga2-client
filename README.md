@@ -17,7 +17,7 @@ Variable | Description
 ### Host variables
 Variable | Description | Mandatory
 ---------|-------------|----------
-`client_common_name` | Client's common name | Yes (if client); No (if master/satellite)
+`icinga2_client_common_name` | Client's common name | Yes (if client); No (if master/satellite)
 
 ## Run
 Example:
