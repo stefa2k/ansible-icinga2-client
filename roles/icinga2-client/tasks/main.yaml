@@ -5,9 +5,13 @@
 
 - name: Generate signed tickets for clients
   shell: "docker exec icinga2 icinga2 pki ticket --cn '{{ item }}'"
-  register: hostvars[item].signed_ticket
+  register: signed_tickets
   with_items: "{{ groups['all']|map('extract',hostvars,'icinga2_client_common_name')|list }}"
   when: hostvars[inventory_hostname].icinga2_client_common_name is not defined
+
+- name: Signatures
+  debug:
+    msg: "{{ signed_tickets }}"
 
 - name: Install required system packages
   apt: 
@@ -30,7 +34,7 @@
       "Master/Satellite endpoint port": "{{ master_satellite_port }}"
       "Add more master/satellite endpoints": n
       "Is this information correct": y
-      "icinga2 pki ticket": "{{ hostvars[inventory_hostname].signed_ticket }}"
+      "icinga2 pki ticket": "{{ signed_tickets.results[hostvars[inventory_hostname].icinga2_client_common_name].stdout }}"
       "Bind Host": 
       "Bind Port": 
       "Accept config from parent node": y
