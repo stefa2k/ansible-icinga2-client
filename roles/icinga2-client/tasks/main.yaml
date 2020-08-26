@@ -2,8 +2,8 @@
 - name: Generate signed tickets for clients
   shell: "docker exec icinga2 icinga2 pki ticket --cn '{{ item }}'"
   register: hostvars[item].signed_ticket
-  when: hostvars[inventory_hostname].client_common_name is not defined
-  with_items: "{{ groups['all']|selectattr('client_common_name', 'defined')|map('extract',hostvars,'client_common_name')|list }}"
+  when: hostvars[inventory_hostname].icinga2_client_common_name is not defined
+  with_items: "{{ groups['all']|selectattr('icinga2_client_common_name', 'defined')|map('extract',hostvars,'icinga2_client_common_name')|list }}"
 
 - name: Install required system packages
   apt: 
@@ -13,14 +13,14 @@
   loop:
   - icinga2
   - monitoring-plugins
-  when: hostvars[inventory_hostname].client_common_name is defined
+  when: hostvars[inventory_hostname].icinga2_client_common_name is defined
 
 - name: Configure icinga2 client
   expect:
     command: 
     responses:
       "Please specify if this is a satellite/client setup": y
-      "Please specify the common name": "{{ hostvars[inventory_hostname].client_common_name }}"
+      "Please specify the common name": "{{ hostvars[inventory_hostname].icinga2_client_common_name }}"
       "Master/Satellite Common Name": "{{ master_satellite_node }}"
       "Master/Satellite endpoint host": "{{ master_satellite_host }}"
       "Master/Satellite endpoint port": "{{ master_satellite_port }}"
@@ -31,14 +31,14 @@
       "Bind Port": 
       "Accept config from parent node": y
       "Accept commands from parent node": y
-      "Local zone name": "{{ hostvars[inventory_hostname].client_common_name }}"
+      "Local zone name": "{{ hostvars[inventory_hostname].icinga2_client_common_name }}"
       "Parent zone name": 
       "Do you want to specify additional global zones": n
       "Do you want to disable the inclusion of the conf": y
-  when: hostvars[inventory_hostname].client_common_name is defined
+  when: hostvars[inventory_hostname].icinga2_client_common_name is defined
 
 - name: Restart icinga2 client
   service:
     name: icinga2
     state: restarted
-  when: hostvars[inventory_hostname].client_common_name is defined
+  when: hostvars[inventory_hostname].icinga2_client_common_name is defined
