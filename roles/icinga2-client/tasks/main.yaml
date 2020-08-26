@@ -1,9 +1,13 @@
 ---
+- name: Generating signatures for ...
+  debug:
+    msg: "{{ groups['all']|map('extract',hostvars,'icinga2_client_common_name')|join(', ') }}"
+
 - name: Generate signed tickets for clients
   shell: "docker exec icinga2 icinga2 pki ticket --cn '{{ item }}'"
   register: hostvars[item].signed_ticket
+  with_items: "{{ groups['all']|map('extract',hostvars,'icinga2_client_common_name')|list }}"
   when: hostvars[inventory_hostname].icinga2_client_common_name is not defined
-  with_items: "{{ groups['all']|selectattr('icinga2_client_common_name', 'defined')|map('extract',hostvars,'icinga2_client_common_name')|list }}"
 
 - name: Install required system packages
   apt: 
