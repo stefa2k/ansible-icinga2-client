@@ -34,7 +34,7 @@
       "Master/Satellite endpoint port": "{{ master_satellite_port }}"
       "Add more master/satellite endpoints": n
       "Is this information correct": y
-      "icinga2 pki ticket": "{{ hostvars[signing_ansible_host]['signed_tickets'].results|selectaddr('item', 'equalto', hostvars[inventory_hostname].icinga2_client_common_name)|list|first }}"
+      "icinga2 pki ticket": "{{ hostvars[signing_ansible_host]['signed_tickets'].results|selectattr('item', 'equalto', hostvars[inventory_hostname].icinga2_client_common_name)|list|first }}"
       "Bind Host": 
       "Bind Port": 
       "Accept config from parent node": y
