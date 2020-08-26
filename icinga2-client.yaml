@@ -2,6 +2,7 @@
 - hosts: all
   become: yes
   vars:
+    signing_ansible_host: icinga.example.com
     master_satellite_node: icinga.example.com
     master_satellite_host: 192.168.0.123
     master_satellite_port: 5665
