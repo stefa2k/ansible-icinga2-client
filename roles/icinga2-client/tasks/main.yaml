@@ -21,6 +21,7 @@
   loop:
   - icinga2
   - monitoring-plugins
+  - python-pexpect
   when: hostvars[inventory_hostname].icinga2_client_common_name is defined
 
 - name: Configure icinga2 client
